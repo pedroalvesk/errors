@@ -1,8 +1,8 @@
-package GoErrors
+package errors
 
 type Error struct {
 	msg  string
-	Code int
+	code int
 }
 
 func (err *Error) Error() string {
@@ -10,14 +10,5 @@ func (err *Error) Error() string {
 }
 
 func New(msg string, code int) error {
-	return &Error{msg: msg, Code: code}
-}
-
-func getCode(err error) int {
-	cErr, ok := err.(*Error)
-	if !ok || err == nil {
-		return -1
-	}
-
-	return cErr.Code
+	return &Error{msg: msg, code: code}
 }

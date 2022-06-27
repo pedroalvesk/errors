@@ -1,18 +1,19 @@
-package GoErrors
+package errors
 
 import "net/http"
 
-type config struct {
-	defaultError int
-	returnKey    string
-	messages     map[int]string
+type Config struct {
+	DefaultError      int
+	MessageKey        string
+	Messages          map[int]string
+	MessageNotDefined string
 }
 
-func newDefaultConfig() config {
-	return config{
-		defaultError: http.StatusInternalServerError,
-		returnKey:    "message",
-		messages: map[int]string{
+func newDefaultConfig() *Config {
+	return &Config{
+		DefaultError: http.StatusInternalServerError,
+		MessageKey:   "message",
+		Messages: map[int]string{
 			http.StatusBadRequest:           "the server could not understand the request with the data that was given",
 			http.StatusUnauthorized:         "unauthorized action",
 			http.StatusForbidden:            "forbidden action",
@@ -21,5 +22,6 @@ func newDefaultConfig() config {
 			http.StatusUnsupportedMediaType: "the requested media type is not supported",
 			http.StatusInternalServerError:  "a error occurred while working on the request",
 		},
+		MessageNotDefined: "message for this error code is not defined yet",
 	}
 }

@@ -1,11 +1,11 @@
-package GoErrors
+package errors
 
 import "github.com/gin-gonic/gin"
 
-func GinMiddleware(messages map[int]string) gin.HandlerFunc {
-	cfg := newDefaultConfig()
-	if messages != nil {
-		cfg.messages = messages
+func GinMiddleware(config *Config) gin.HandlerFunc {
+	cfg := config
+	if cfg == nil {
+		cfg = newDefaultConfig()
 	}
 
 	return func(context *gin.Context) {
@@ -15,11 +15,18 @@ func GinMiddleware(messages map[int]string) gin.HandlerFunc {
 			return
 		}
 
-		code := getCode(context.Errors.Last())
-		if code == -1 {
-			code = cfg.defaultError
+		var code int
+		err, ok := context.Errors.Last().Err.(*Error)
+		if !ok {
+			code = cfg.DefaultError
 		}
 
-		context.AbortWithStatusJSON(code, gin.H{cfg.returnKey: cfg.messages[code]})
+		code = err.code
+		msg, ok := cfg.Messages[code]
+		if !ok {
+			msg = cfg.MessageNotDefined
+		}
+
+		context.AbortWithStatusJSON(code, gin.H{cfg.MessageKey: msg})
 	}
 }

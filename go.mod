@@ -1,4 +1,4 @@
-module github.com/pedroalvesk/GoErrors
+module github.com/pedroalvesk/errors
 
 go 1.13
 
